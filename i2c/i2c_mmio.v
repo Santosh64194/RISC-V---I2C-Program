@@ -39,39 +39,5 @@ module i2c_mmio (
         .sda(sda),
         .scl(scl)
     );
-
-    // MMIO registers map
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
-            slave_addr <= 7'd0;
-            reg_addr   <= 8'd0;
-            write_data <= 8'd0;
-            rw         <= 1'b0;
-            start      <= 1'b0;
-        end else begin
-            if (write_en) begin
-                case (addr)
-                    4'h0: slave_addr <= wdata[6:0];
-                    4'h1: reg_addr   <= wdata[7:0];
-                    4'h2: write_data <= wdata[7:0];
-                    4'h3: rw         <= wdata[0];
-                    4'h4: start      <= wdata[0];
-                endcase
-            end
-        end
-    end
-
-    // Readback
-    always @(*) begin
-        case (addr)
-            4'h0: rdata = {25'd0, slave_addr};
-            4'h1: rdata = {24'd0, reg_addr};
-            4'h2: rdata = {24'd0, write_data};
-            4'h3: rdata = {31'd0, rw};
-            4'h4: rdata = {30'd0, ack_error, done};
-            4'h5: rdata = {24'd0, read_data};
-            default: rdata = 32'd0;
-        endcase
-    end
-
+    
 endmodule
