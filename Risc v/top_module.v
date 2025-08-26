@@ -6,7 +6,7 @@ module riscv_top_simple(
 );
     reg  [31:0] pc;
     wire [31:0] instruction;
-    wire [31:0] pc_plus_4 = pc + 32'd4;
+    wire [31:0] pc_plus_4 = pc + 32'h4;
     wire        RegWrite;
     wire [3:0]  alu_control;
     wire        ALUSrc;
