@@ -1,39 +1,17 @@
-module Imem(
-    input [7:0] a,
-    output reg [31:0] rd
+module Imem (
+  input  wire [31:0] a,
+  output reg  [31:0] rd
 );
+  reg [31:0] storage [0:10000];
 
-    always @(*) begin
-        case (a)
-            8'h00: rd = 32'h004001b7;
-            8'h01: rd = 32'h20000113;
-            8'h02: rd = 32'h00e00293;
-            8'h03: rd = 32'h02502023;
-            8'h04: rd = 32'h02002303;
-            8'h05: rd = 32'h000303b3;
-            8'h06: rd = 32'h00730463;
-            8'h07: rd = 32'h000003b3;
-            8'h08: rd = 32'h00731463;
-            8'h09: rd = 32'h00239e13;
-            8'h0A: rd = 32'h0051a223;
-            8'h0B: rd = 32'h010000ef;
-            8'h0C: rd = 32'h03697f13;
-            8'h0D: rd = 32'h00000013;
-            8'h0E: rd = 32'hffdff06f;
-            8'h0F: rd = 32'h00200f93;
-            8'h10: rd = 32'h41fe0933;
-            8'h11: rd = 32'h00008067;
-            8'h12: rd = 32'h00001941;
-            8'h13: rd = 32'h73697200;
-            8'h14: rd = 32'h01007663;
-            8'h15: rd = 32'h0000000f;
-            8'h16: rd = 32'h33767205;
-            8'h17: rd = 32'h70326932;
-            8'h18: rd = 32'h00000030;
-            8'h19: rd = 32'h00000000;
-            8'h1A: rd = 32'h00000000;
-            8'h1B: rd = 32'h00000000;
-            default: rd = 32'h00000000;
-        endcase
+    initial begin
+        storage[0] = 32'h00000013; // NOP (ADDI x0, x0, 0)
+        storage[1] = 32'h00100093; // ADDI x1, x0, 1
+        storage[2] = 32'h00200113; // ADDI x2, x0, 2
+        storage[3] = 32'h002081B3; // ADD x3, x1, x2
+        storage[4] = 32'h00310023; // SW x3, 0(x2)
     end
+
+  always @(*) rd = storage[a >> 2];
+
 endmodule
