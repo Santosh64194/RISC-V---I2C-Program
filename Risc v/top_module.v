@@ -24,7 +24,7 @@ module riscv_top_simple(
             pc <= pc_plus_4;
     end
     Imem imem_inst (
-        .a  (pc[9:2]),
+        .a  (pc),
         .rd (instruction)
     );
 
