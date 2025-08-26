@@ -3,7 +3,7 @@
 module decoder(
     input [31:0] instr,
     output  reg_write,
-    output [3:0] alucontrol 
+    output reg [3:0] alucontrol 
 );
 
 reg reg_writ;
