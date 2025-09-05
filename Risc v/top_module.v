@@ -16,13 +16,14 @@ module riscv_top(
     wire [31:0] alu_input2;
     wire [31:0] alu_result;
     wire alu_zero; 
-
+    wire [31:0] result;
+    wire [31:0] dmem_temp_rslt;
+    wire [1:0] result_src;
+    reg [31:0] tempPC;
     always @(posedge clk) begin
         if (rst)
-            pc <= 32'h0;
-        else
-            if(isbranch) pc <= pc + immediate;
-            else pc <= pc_plus_4;
+            tempPC <= 32'h0;
+        else tempPC = (isbranch) ? pc + immediate : pc_plus_4;
     end
     Imem imem_inst (
         .a(pc),
@@ -32,7 +33,8 @@ module riscv_top(
     decoder decoder_inst (
         .instr(instruction),
         .reg_write(RegWrite),
-        .alucontrol(alu_control)
+        .alucontrol(alu_control),
+        .result_src(result_src)
     );
     regFile reg_file_inst (
         .clk(clk),
@@ -40,7 +42,7 @@ module riscv_top(
         .a_rd1(instruction[19:15]),
         .a_rd2(instruction[24:20]),
         .a_wr(instruction[11:7]),
-        .w_data(alu_result),    
+        .w_data(result),    
         .rd1(reg_read_data1),
         .rd2(reg_read_data2)
     );
@@ -58,6 +60,21 @@ module riscv_top(
         .control(alu_control),
         .root(isbranch)
     );
+
+    out_reg outreg(
+        .alu_result(alu_result),
+        .data_mem_result(dmem_temp_rslt),
+        .PC(pc_plus_4),
+        .sel(result_src),
+        .result(result)
+    );
+
+    pcmuxd pc_mux(
+        .clk(clk),
+        .in(tempPC),
+        .out(pc)
+    );
+
     assign ALUSrc = (instruction[6:0] == 7'b0010011);
     assign alu_input2 = ALUSrc ? immediate : reg_read_data2;
 
