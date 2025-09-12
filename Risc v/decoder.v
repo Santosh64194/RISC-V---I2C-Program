@@ -2,7 +2,7 @@
 
 module decoder(
     input [31:0] instr,
-    output  reg_write,
+    output reg_write,
   output reg [3:0] alucontrol,
     output [1:0] result_src,
     output ImmSrc,
@@ -17,10 +17,10 @@ assign ImmSrc = (instr[6:0] == 7'b0010011) || // I-type (ADDI)
                 (instr[6:0] == 7'b0100011) || // S-type (store)
                 (instr[6:0] == 7'b1100011);   // B-type (branch)
 always@(*) begin
-    isReg = (instr[6:0] == 7'b0110011);
+  isReg = (instr[6:0] == 7'b0110011);
     isImm = (instr[6:0] == 7'b0010011);
     isBranch = (instr[6:0] == 7'b1100011);
-    if(isReg || isImm) reg_writ = 1;
+  reg_writ = (isReg || isImm) ? 1'b1 : 1'b0;
 end
 
 always@(*) begin
