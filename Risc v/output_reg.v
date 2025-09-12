@@ -1,4 +1,4 @@
-`timescale 1ns/ps
+`timescale 1ns/1ps
 
 module out_reg (
     input [31:0] alu_result, 
