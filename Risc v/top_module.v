@@ -9,8 +9,8 @@ module riscv_top(
     wire [31:0] pc_plus_4 = pc + 32'd4;
     wire RegWrite;
     wire [3:0]  alu_control;
-    wire ALUSrc, Immsrc, isbranch;
-    wire [31:0] immediate;
+    wire ALUSrc, Immsrc, isbranch, is_branch_instr;
+    reg [31:0] immediate;
     wire [31:0] reg_read_data1;
     wire [31:0] reg_read_data2;
     wire [31:0] alu_input2;
@@ -23,7 +23,7 @@ module riscv_top(
     always @(posedge clk) begin
         if (rst)
             tempPC <= 32'h0;
-        else tempPC = (isbranch) ? pc + immediate : pc_plus_4;
+        else tempPC = (is_branch_instr && isbranch) ? pc + immediate : pc_plus_4;
     end
     Imem imem_inst (
         .a(pc),
@@ -35,7 +35,8 @@ module riscv_top(
         .reg_write(RegWrite),
         .alucontrol(alu_control),
         .result_src(result_src),
-        .ImmSrc(Immsrc)
+      .ImmSrc(Immsrc),
+      .is_branch_instr(is_branch_instr)
     );
     regFile reg_file_inst (
         .clk(clk),
@@ -87,5 +88,6 @@ always @(*)
             7'b1100011: immediate = {{20{instruction[31]}}, instruction[7], instruction[30:25], instruction[11:8], 1'b0}; // B-type
             default: immediate = 32'b0; 
         endcase
-
+  else
+        immediate = 32'b0; 
 endmodule
