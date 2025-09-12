@@ -4,13 +4,15 @@ module decoder(
     input [31:0] instr,
     output  reg_write,
     output [3:0] alucontrol,
-    output [1:0] result_src;
+    output [1:0] result_src,
+    output ImmSrc
 );
 
 reg reg_writ;
 reg isImm;
 reg isReg;
 reg isBranch;
+    ImmSrc = (isImm) ? 1'b1 : 1'b0;
 always@(*) begin
     isReg = (instr[6:0] == 7'b0110011);
     isImm = (instr[6:0] == 7'b0010011);
