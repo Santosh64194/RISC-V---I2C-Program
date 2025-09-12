@@ -1,4 +1,4 @@
-`timescale 1ns/ps
+`timescale 1ns/1ps
 
 // module pcmux(
 //     input sel,
@@ -21,5 +21,6 @@ reg [31:0] pcout;
 always@(posedge clk) pcout <= in;
 
 assign out = pcout;
+
 
 endmodule
