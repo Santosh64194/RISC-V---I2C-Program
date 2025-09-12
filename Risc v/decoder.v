@@ -49,6 +49,3 @@ end
 assign reg_write = reg_writ;
   
 endmodule
-
-
-module Ime
