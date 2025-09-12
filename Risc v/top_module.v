@@ -34,7 +34,8 @@ module riscv_top(
         .instr(instruction),
         .reg_write(RegWrite),
         .alucontrol(alu_control),
-        .result_src(result_src)
+        .result_src(result_src),
+        .ImmSrc(Immsrc)
     );
     regFile reg_file_inst (
         .clk(clk),
