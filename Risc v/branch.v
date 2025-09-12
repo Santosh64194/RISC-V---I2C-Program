@@ -1,3 +1,6 @@
+module branch(
+    input [31:0] A,B,
+    input [3:0] control,
     output root
 );
 
