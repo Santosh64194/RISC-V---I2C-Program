@@ -3,16 +3,19 @@
 module decoder(
     input [31:0] instr,
     output  reg_write,
-    output [3:0] alucontrol,
+  output reg [3:0] alucontrol,
     output [1:0] result_src,
-    output ImmSrc
+    output ImmSrc,
+  output is_branch_instr
 );
 
 reg reg_writ;
 reg isImm;
 reg isReg;
 reg isBranch;
-    ImmSrc = (isImm) ? 1'b1 : 1'b0;
+assign ImmSrc = (instr[6:0] == 7'b0010011) || // I-type (ADDI)
+                (instr[6:0] == 7'b0100011) || // S-type (store)
+                (instr[6:0] == 7'b1100011);   // B-type (branch)
 always@(*) begin
     isReg = (instr[6:0] == 7'b0110011);
     isImm = (instr[6:0] == 7'b0010011);
@@ -41,6 +44,11 @@ always@(*) begin
             4'b1010 : alucontrol = 4'h9;
             4'b1011 : alucontrol = 4'h8;
         endcase
-
+end
+ assign is_branch_instr = isBranch; 
 assign reg_write = reg_writ;
+  
 endmodule
+
+
+module Ime
