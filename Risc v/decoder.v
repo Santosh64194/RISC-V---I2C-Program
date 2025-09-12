@@ -8,7 +8,7 @@ module decoder(
     output ImmSrc,
   output is_branch_instr
 );
-
+assign result_src = 2'b00;
 reg reg_writ;
 reg isImm;
 reg isReg;
