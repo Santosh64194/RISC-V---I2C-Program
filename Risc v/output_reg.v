@@ -12,10 +12,10 @@ module out_reg (
     always@(*) begin
         case(sel)
             2'b00 : re = alu_result;
+            2'b01 : re = data_mem_result;
             2'b10 : re = PC;
         endcase
     end
     assign result = re;
 
 endmodule 
-
