@@ -2,7 +2,7 @@
 
 module decoder(
     input [31:0] instr,
-    output reg_write,
+    output reg_write, wed,
   output reg [3:0] control,
     output reg [1:0] result_src,
     output ImmSrc,
@@ -10,21 +10,27 @@ module decoder(
   output is_jmp_instr, is_jmpr_instr
 );
 
-reg reg_writ;
+reg reg_writ, write_data_en;
 reg isImm;
 reg isJump, isJumpR;
 reg isReg;
 reg isBranch;
-assign ImmSrc = (instr[6:0] == 7'b0010011) || // I-type
-                (instr[6:0] == 7'b0100011) || // S-type
-                (instr[6:0] == 7'b1100011);   // B-type
+reg isLoad, isStore;
+assign ImmSrc = (instr[6:0] == 7'b0010011) ||
+                    (instr[6:0] == 7'b0000011) ||
+                    (instr[6:0] == 7'b1100111) ||
+                    (instr[6:0] == 7'b0100011) ||
+                    (instr[6:0] == 7'b1100011);
 always@(*) begin
   isReg = (instr[6:0] == 7'b0110011);
     isImm = (instr[6:0] == 7'b0010011);
     isBranch = (instr[6:0] == 7'b1100011);
     isJump = (instr[6:0] == 7'b1101111);
     isJumpR = (instr[6:0] == 7'b1100111);
+    isLoad =  (instr[6:0] == 7'b0000011);
+    isStore =  (instr[6:0] == 7'b0100011);
   reg_writ = (isReg || isImm || isJump || isJumpR) ? 1'b1 : 1'b0;
+  write_data_en = (isStore) ? 1'b1 : 1'b0;
 end
 
 always@(*) begin
@@ -53,6 +59,7 @@ end
 always@(*) begin
     if(isJump || isJumpR)
         result_src = 2'b10; // Select PC+4
+    else if(isLoad) result_src = 2'b01; // Read from Dmem
     else
         result_src = 2'b00; // Default: select ALU result
 end
@@ -61,4 +68,5 @@ assign is_branch_instr = isBranch;
 assign reg_write = reg_writ;
 assign is_jmp_instr = isJump;
 assign is_jmpr_instr = isJumpR;
+assign wed = write_data_en;
 endmodule
