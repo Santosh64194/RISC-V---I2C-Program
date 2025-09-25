@@ -28,7 +28,7 @@ always @(posedge clk) begin
 end
 
 // reading
-wire [31:0] read_data = {mem[{a[31:2], 2'b00}], mem[{a[31:2], 2'b01}], mem[{a[31:2], 2'b10}], mem[{a[31:2], 2'b11}]};
+    wire [31:0] read_data = {mem[{a[31:2], 2'b11}], mem[{a[31:2], 2'b10}], mem[{a[31:2], 2'b01}], mem[{a[31:2], 2'b00}]};
 always @(*) begin
   if(we == 0) begin
     case (func3)
