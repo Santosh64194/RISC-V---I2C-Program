@@ -29,7 +29,7 @@ always@(*) begin
     isJumpR = (instr[6:0] == 7'b1100111);
     isLoad =  (instr[6:0] == 7'b0000011);
     isStore =  (instr[6:0] == 7'b0100011);
-  reg_writ = (isReg || isImm || isJump || isJumpR) ? 1'b1 : 1'b0;
+    reg_writ = (isReg || isImm || isJump || isJumpR || isLoad) ? 1'b1 : 1'b0;
   write_data_en = (isStore) ? 1'b1 : 1'b0;
 end
 
