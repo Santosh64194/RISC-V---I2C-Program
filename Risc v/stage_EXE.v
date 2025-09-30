@@ -8,7 +8,7 @@ module stage2 (
     input [4:0] in_a_wr,
     input [2:0] in_func3,
 
-    output [2:0] o_func3,
+    output reg [2:0] o_func3,
     output reg o_RegWrite, 
     output reg o_wed,
     output reg [1:0] o_result_src,
