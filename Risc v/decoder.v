@@ -3,7 +3,7 @@
 module decoder(
     input [31:0] instr,
     output reg_write, wed,
-  output reg [3:0] control,
+  output reg [4:0] control,
     output reg [1:0] result_src,
     output ImmSrc,
   output is_branch_instr,
@@ -12,6 +12,7 @@ module decoder(
 
 reg reg_writ, write_data_en;
 reg isImm;
+reg isMul;
 reg isJump, isJumpR;
 reg isReg;
 reg isBranch;
@@ -29,7 +30,8 @@ always@(*) begin
     isJumpR = (instr[6:0] == 7'b1100111);
     isLoad =  (instr[6:0] == 7'b0000011);
     isStore =  (instr[6:0] == 7'b0100011);
-    reg_writ = (isReg || isImm || isJump || isJumpR || isLoad) ? 1'b1 : 1'b0;
+    isMul = (instr[6:0] == 7'b0110011 && instr[31:25] == 7'b0000001);
+  reg_writ = (isReg || isImm || isJump || isJumpR || isLoad || isMul) ? 1'b1 : 1'b0;
   write_data_en = (isStore) ? 1'b1 : 1'b0;
 end
 
@@ -43,16 +45,27 @@ always@(*) begin
             3'b110 : control = 4'h4;
             3'b111 : control = 4'h5;
         endcase
+     else if (isMul)
+        case({instr[14:12], instr[31:25]})
+            10'b0000000001 : control = 5'ha;
+            10'b0010000001 : control = 5'hb;
+            10'b0100000001 : control = 5'hc;
+            10'b0110000001 : control = 5'hd;
+            10'b1000000001 : control = 5'he;
+            10'b1010000001 : control = 5'hf;
+            10'b1100000001 : control = 5'h10;
+            10'b1110000001 : control = 5'h11;
+        endcase
     else if(isReg || isImm)
         case({(isReg || isImm), instr[14:12]})
-            4'b1000 : control = (instr[30]) ? 4'h1 : 4'h0;
-            4'b1100 : control = 4'h4;
-            4'b1110 : control = 4'h3;
-            4'b1111 : control = 4'h2;
-            4'b1001 : control = 4'h5;
-            4'b1101 : control = (instr[30]) ? 4'h7 : 4'h6;
-            4'b1010 : control = 4'h9;
-            4'b1011 : control = 4'h8;
+            4'b1000 : control = (instr[30]) ? 5'h1 : 5'h0;
+            4'b1100 : control = 5'h4;
+            4'b1110 : control = 5'h3;
+            4'b1111 : control = 5'h2;
+            4'b1001 : control = 5'h5;
+            4'b1101 : control = (instr[30]) ? 5'h7 : 5'h6;
+            4'b1010 : control = 5'h9;
+            4'b1011 : control = 5'h8;
         endcase
 end
 
