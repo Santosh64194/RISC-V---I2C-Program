@@ -27,7 +27,7 @@ output reg [31:0] o_pc_plus_4 ,
 output reg [31:0] o_immediate,
 output reg [4:0] o_rd
 );
-always @(posedge clk || posedge rst) begin
+    always @(posedge clk or posedge rst) begin
     if(rst || flush) begin
         o_A <= 0;
         o_B <= 0;
@@ -65,3 +65,4 @@ always @(posedge clk || posedge rst) begin
     end
 end
 endmodule
+
