@@ -4,7 +4,7 @@ module Dmem(
     input clk, we,
     input [31:0] a, wd,
     input [2:0] func3,
-    output [31:0] rd
+    output reg [31:0] rd
 );
   reg [7:0] mem [1023:0] ;
 
