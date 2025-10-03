@@ -18,7 +18,7 @@ module stage2 (
     output reg [4:0] o_a_wr
 );
     always @(posedge clk or posedge rst) begin
-        if(rst or flush) begin
+        if(rst || flush) begin
            o_RegWrite <= 0;
            o_wed <= 0;
            o_result_src <= 0;
@@ -39,3 +39,4 @@ module stage2 (
         end
     end
 endmodule
+
