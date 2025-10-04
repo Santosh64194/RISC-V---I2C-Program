@@ -1,19 +1,23 @@
 `timescale 1ns/1ps
 
 module stage1(
-input clk, rst, flush, stall,
+input clk, rst, flush,
 input [31:0] in_A, in_B,
-input [3:0] in_control,
+input [4:0] in_control,
 input in_reg_write, in_wed, in_is_branch_instr, in_is_jmp_instr, in_is_jmpr_instr, in_ALUSrc,
 input [1:0] in_Result_Src,
 input [31:0] in_dmem_temp_rslt, in_pc, in_pc_plus_4 , in_immediate,
 input [4:0] in_rd,
 input [2:0] in_func3,
+input [4:0] in_rs1_addr,
+input [4:0] in_rs2_addr,
 
+output reg [4:0] o_rs1_addr,
+output reg [4:0] o_rs2_addr,
 output reg [2:0] o_func3,
 output reg [31:0] o_A, 
 output reg [31:0] o_B,
-output reg [3:0] o_control,
+output reg [4:0] o_control,
 output reg o_reg_write, 
 output reg o_wed, 
 output reg o_is_branch_instr, 
@@ -27,11 +31,11 @@ output reg [31:0] o_pc_plus_4 ,
 output reg [31:0] o_immediate,
 output reg [4:0] o_rd
 );
-    always @(posedge clk or posedge rst) begin
+always @(posedge clk or posedge rst) begin
     if(rst || flush) begin
         o_A <= 0;
         o_B <= 0;
-        o_control <= 0;
+        o_control <= 5'b0;
         o_reg_write <= 0;
         o_wed <= 0;
         o_is_branch_instr <= 0;
@@ -45,7 +49,9 @@ output reg [4:0] o_rd
         o_immediate <= 0;
         o_rd <= 0;
         o_func3 <= 0;
-    end else if (!stall) begin
+        o_rs1_addr <= 0;
+        o_rs2_addr <= 0;
+    end else begin
         o_A <= in_A;
         o_B <= in_B;
         o_control <= in_control;
@@ -62,7 +68,8 @@ output reg [4:0] o_rd
         o_immediate <= in_immediate;
         o_rd <= in_rd;
         o_func3 <= in_func3;
+        o_rs1_addr <= in_rs1_addr;
+        o_rs2_addr <= in_rs2_addr;
     end
 end
 endmodule
-
