@@ -18,4 +18,4 @@ module out_reg (
     end
     assign result = re;
 
-endmodule 
+endmodule
