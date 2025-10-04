@@ -5,7 +5,7 @@ module decoder(
     output reg_write, wed,
   output reg [4:0] control,
     output reg [1:0] result_src,
-    output ImmSrc,
+    output reg ImmSrc,
   output is_branch_instr,
   output is_jmp_instr, is_jmpr_instr
 );
@@ -17,11 +17,14 @@ reg isJump, isJumpR;
 reg isReg;
 reg isBranch;
 reg isLoad, isStore;
-assign ImmSrc = (instr[6:0] == 7'b0010011) ||
+ always@(*) begin
+    if((instr[6:0] == 7'b0010011) ||
                     (instr[6:0] == 7'b0000011) ||
                     (instr[6:0] == 7'b1100111) ||
                     (instr[6:0] == 7'b0100011) ||
-                    (instr[6:0] == 7'b1100011);
+       (instr[6:0] == 7'b1100011)) ImmSrc = 1'b1;
+    else ImmSrc = 1'b0;
+  end
 always@(*) begin
   isReg = (instr[6:0] == 7'b0110011);
     isImm = (instr[6:0] == 7'b0010011);
@@ -38,12 +41,12 @@ end
 always@(*) begin
     if(isBranch)
         case(instr[14:12])
-            3'b000 : control = 4'h0;
-            3'b001 : control = 4'h1;
-            3'b100 : control = 4'h2;
-            3'b101 : control = 4'h3;
-            3'b110 : control = 4'h4;
-            3'b111 : control = 4'h5;
+            3'b000 : control = 5'h0;
+            3'b001 : control = 5'h1;
+            3'b100 : control = 5'h2;
+            3'b101 : control = 5'h3;
+            3'b110 : control = 5'h4;
+            3'b111 : control = 5'h5;
         endcase
      else if (isMul)
         case({instr[14:12], instr[31:25]})
