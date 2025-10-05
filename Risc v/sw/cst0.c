@@ -28,7 +28,6 @@ void __attribute__((noreturn)) c_startup(void) {
 
     // Call main()
     main();
-
     // Trap if main returns
     while(1) {
         __asm__ volatile ("wfi");
